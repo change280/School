@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>社群行銷小編模擬面試簡報 - Meta 主題版</title>
+    <!-- 引入 Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 引入 Google Fonts: Noto Sans TC -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <!-- 引入 FontAwesome 圖示 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Noto Sans TC"', 'sans-serif'],
+                    },
+                    colors: {
+                        'brand-blue': '#2563EB',   
+                        'brand-coral': '#FF6B6B',  
+                        'brand-dark': '#1F2937',
+                        'meta-blue': '#0668E1',    // Meta 品牌藍
+                        'ig-purple': '#833AB4',    // IG 漸層紫
+                        'ig-pink': '#E1306C',      // IG 漸層粉
+                        'ig-orange': '#F56040',    // IG 漸層橘
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { margin: 0; overflow: hidden; background-color: #0f172a; color: #f1f5f9; }
+        
+        /* 隱藏原生滾動條，保持畫面乾淨 */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); border-radius: 10px; }
+        
+        .slide {
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateX(0) scale(1);
+            z-index: 0;
+            pointer-events: none;
+            display: flex;
+            flex-direction: column;
+            padding: 3rem;
+        }
+        .slide.active {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(0) scale(1);
+            z-index: 10;
+            pointer-events: auto;
+        }
+        .slide.enter-next,
+        .slide.enter-prev,
+        .slide.exit-next,
+        .slide.exit-prev {
+            visibility: visible;
+            pointer-events: none;
+        }
+        .slide.enter-next {
+            animation: slideInFromRight 0.46s cubic-bezier(0.22, 1, 0.36, 1) 0.14s both;
+            z-index: 12;
+        }
+        .slide.enter-prev {
+            animation: slideInFromLeft 0.46s cubic-bezier(0.22, 1, 0.36, 1) 0.14s both;
+            z-index: 12;
+        }
+        .slide.exit-next {
+            animation: slideOutToLeft 0.38s cubic-bezier(0.55, 0.06, 0.68, 0.19) both;
+            z-index: 11;
+        }
+        .slide.exit-prev {
+            animation: slideOutToRight 0.38s cubic-bezier(0.55, 0.06, 0.68, 0.19) both;
+            z-index: 11;
+        }
+        @keyframes slideInFromRight {
+            0% {
+                opacity: 0;
+                transform: translateX(7%) scale(0.985);
+                filter: blur(5px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateX(0) scale(1);
+                filter: blur(0);
+            }
+        }
+        @keyframes slideInFromLeft {
+            0% {
+                opacity: 0;
+                transform: translateX(-7%) scale(0.985);
+                filter: blur(5px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateX(0) scale(1);
+                filter: blur(0);
+            }
+        }
+        @keyframes slideOutToLeft {
+            0% {
+                opacity: 1;
+                transform: translateX(0) scale(1);
+                filter: blur(0);
+            }
+            100% {
+                opacity: 0;
+                transform: translateX(-7%) scale(0.985);
+                filter: blur(5px);
+            }
+        }
+        @keyframes slideOutToRight {
+            0% {
+                opacity: 1;
+                transform: translateX(0) scale(1);
+                filter: blur(0);
+            }
+            100% {
+                opacity: 0;
+                transform: translateX(7%) scale(0.985);
+                filter: blur(5px);
+            }
+        }
+        .slide-content {
+            max-width: 1100px;
+            width: 100%;
+            height: 100%;
+            margin: 0 auto;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+        /* 文字漸層特效共用類別 */
+        .text-gradient {
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            background-image: linear-gradient(to right, #0668E1, #833AB4, #E1306C);
+        }
+        .bg-glass {
+            background-color: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+        .bg-glass-hover:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        @keyframes heroReveal {
+            0% {
+                opacity: 0;
+                transform: translateY(28px) scale(0.98);
+                filter: blur(8px);
+            }
+            70% {
+                opacity: 1;
+                transform: translateY(-4px) scale(1.01);
+                filter: blur(0);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+                filter: blur(0);
+            }
+        }
+        @keyframes heroPop {
+            0% {
+                opacity: 0;
+                transform: translateY(18px) scale(0.92);
+            }
+            60% {
+                opacity: 1;
+                transform: translateY(-3px) scale(1.04);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+        @keyframes heroGlowSweep {
+            0% {
+                opacity: 0;
+                transform: translateX(-14%) skewX(-12deg);
+            }
+            100% {
+                opacity: 0.6;
+                transform: translateX(14%) skewX(-12deg);
+            }
+        }
+        .hero-entrance {
+            opacity: 0;
+        }
+        .slide.active .hero-entrance {
+            animation: heroReveal 0.95s cubic-bezier(0.22, 1, 0.36, 1) both;
+        }
+        .slide.active .hero-entrance.hero-top {
+            animation-delay: 0.08s;
+        }
+        .slide.active .hero-entrance.hero-title {
+            animation-delay: 0.24s;
+        }
+        .slide.active .hero-entrance.hero-subtitle {
+            animation-delay: 0.44s;
+        }
+        .slide.active .hero-entrance.hero-team {
+            animation-delay: 0.66s;
+            position: relative;
+            overflow: hidden;
+        }
+        .slide.active .hero-entrance.hero-team::after {
+            content: "";
+            position: absolute;
+            inset: -20% auto -20% -40%;
+            width: 38%;
+            background: linear-gradient(90deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.26), rgba(255, 255, 255, 0));
+            animation: heroGlowSweep 1s ease-out 1.05s forwards;
+            pointer-events: none;
+        }
+        .hero-team-members > div {
+            opacity: 0;
+        }
+        .slide.active .hero-team-members > div {
+            animation: heroPop 0.65s cubic-bezier(0.22, 1, 0.36, 1) both;
+        }
+        .slide.active .hero-team-members > div:nth-child(1) {
+            animation-delay: 0.98s;
+        }
+        .slide.active .hero-team-members > div:nth-child(2) {
+            animation-delay: 1.06s;
+        }
+        .slide.active .hero-team-members > div:nth-child(3) {
+            animation-delay: 1.14s;
+        }
+        .slide.active .hero-team-members > div:nth-child(4) {
+            animation-delay: 1.22s;
+        }
+        #navControls {
+            opacity: 0;
+            transition: opacity 0.8s ease;
+        }
+        #navControls.show,
+        #navControls:hover {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body class="antialiased font-sans selection:bg-ig-pink selection:text-white">
+
+    <!-- 全局動態背景光暈 (確保切換投影片時背景不間斷) -->
+    <div class="fixed inset-0 z-[-1] overflow-hidden pointer-events-none">
+        <div class="absolute top-[-10%] left-[-10%] w-[60vw] h-[60vw] rounded-full bg-meta-blue/20 blur-[120px]"></div>
+        <div class="absolute bottom-[-20%] right-[-10%] w-[50vw] h-[50vw] rounded-full bg-ig-pink/20 blur-[150px]"></div>
+        <div class="absolute top-[20%] right-[10%] w-[30vw] h-[30vw] rounded-full bg-ig-purple/20 blur-[100px]"></div>
+    </div>
+
+    <!-- 投影片容器 -->
+    <div id="presentation-container" class="relative w-screen h-screen">
+
+        <!-- PAGE 1: 封面 -->
+        <div class="slide active">
+            <div class="slide-content justify-center items-center text-center relative z-10">
+                <!-- 頂部標籤與 Meta Logo -->
+                <div class="hero-entrance hero-top flex items-center gap-3 mb-8">
+                    <i class="fa-brands fa-meta text-5xl text-meta-blue drop-shadow-[0_0_15px_rgba(6,104,225,0.6)]"></i>
+                    <span class="px-5 py-1.5 border border-white/20 bg-white/5 backdrop-blur-md rounded-full font-bold tracking-widest text-sm uppercase shadow-sm">Mock Interview</span>
+                </div>
+                
+                <h1 class="hero-entrance hero-title text-5xl md:text-7xl font-black mb-6 leading-tight tracking-tight drop-shadow-2xl">專業職能探索<br>與實戰演練</h1>
+                
+                <div class="hero-entrance hero-subtitle bg-glass px-10 py-4 rounded-full mb-16 inline-block">
+                    <h2 class="text-2xl md:text-3xl text-gray-200 font-medium tracking-wide flex items-center justify-center gap-4">
+                        數位行銷產業 <span class="w-2 h-2 rounded-full bg-gray-500"></span>
+                        <span class="text-gradient font-black text-3xl md:text-4xl">社群行銷小編</span>
+                    </h2>
+                </div>
+                
+                <!-- 團隊介紹 -->
+                <div class="hero-entrance hero-team bg-glass rounded-3xl p-10 w-full max-w-4xl relative overflow-hidden group">
+                    <div class="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-50 group-hover:opacity-100 transition duration-500"></div>
+                    
+                    <h3 class="text-xl font-bold text-gray-300 mb-8 flex items-center justify-center gap-3 relative z-10">
+                        <i class="fa-solid fa-people-group text-ig-purple"></i> 第三組 (4人)
+                    </h3>
+                    
+                    <div class="hero-team-members flex flex-wrap justify-center gap-x-12 gap-y-8 text-lg font-medium relative z-10">
+                        <!-- 組員卡片 -->
+                        <div class="flex flex-col items-center gap-3 hover:-translate-y-2 transition duration-300">
+                            <div class="w-16 h-16 rounded-full p-1 bg-gradient-to-tr from-meta-blue to-ig-purple">
+                                <div class="w-full h-full bg-slate-800 rounded-full flex items-center justify-center border border-white/10 shadow-inner">
+                                    <i class="fa-solid fa-user text-xl text-gray-300"></i>
+                                </div>
+                            </div>
+                            <span class="tracking-widest">諶宗漢</span>
+                        </div>
+                        <div class="flex flex-col items-center gap-3 hover:-translate-y-2 transition duration-300">
+                            <div class="w-16 h-16 rounded-full p-1 bg-gradient-to-tr from-meta-blue to-ig-purple">
+                                <div class="w-full h-full bg-slate-800 rounded-full flex items-center justify-center border border-white/10 shadow-inner">
+                                    <i class="fa-solid fa-user text-xl text-gray-300"></i>
+                                </div>
+                            </div>
+                            <span class="tracking-widest">曹紓語</span>
+                        </div>
+                        <div class="flex flex-col items-center gap-3 hover:-translate-y-2 transition duration-300">
+                            <div class="w-16 h-16 rounded-full p-1 bg-gradient-to-tr from-ig-purple to-ig-pink">
+                                <div class="w-full h-full bg-slate-800 rounded-full flex items-center justify-center border border-white/10 shadow-inner">
+                                    <i class="fa-solid fa-user text-xl text-gray-300"></i>
+                                </div>
+                            </div>
+                            <span class="tracking-widest">王怡茜</span>
+                        </div>
+                        <div class="flex flex-col items-center gap-3 hover:-translate-y-2 transition duration-300">
+                            <div class="w-16 h-16 rounded-full p-1 bg-gradient-to-tr from-ig-purple to-ig-orange">
+                                <div class="w-full h-full bg-slate-800 rounded-full flex items-center justify-center border border-white/10 shadow-inner">
+                                    <i class="fa-solid fa-user text-xl text-gray-300"></i>
+                                </div>
+                            </div>
+                            <span class="tracking-widest">康芯菱</span>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+
+        <!-- PAGE 2: 工作與角色分配 -->
+        <div class="slide">
+            <div class="slide-content justify-center">
+                <h2 class="text-4xl font-black mb-10 flex items-center gap-4">
+                    <span class="w-12 h-12 bg-gradient-to-br from-meta-blue to-ig-purple text-white rounded-xl flex items-center justify-center text-2xl shadow-lg"><i class="fa-solid fa-users-gear"></i></span>
+                    工作與角色分配
+                </h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-10">
+                    <div class="bg-glass rounded-2xl p-8 bg-glass-hover transition relative overflow-hidden">
+                        <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-meta-blue to-ig-purple"></div>
+                        <h3 class="text-2xl font-bold mb-6 text-transparent bg-clip-text bg-gradient-to-r from-meta-blue to-ig-purple border-b border-white/10 pb-4">專案工作分配</h3>
+                        <ul class="space-y-5 text-gray-200">
+                            <li class="flex items-start gap-4">
+                                <div class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center shrink-0 text-meta-blue"><i class="fa-solid fa-sitemap"></i></div>
+                                <div><strong class="text-lg text-white">諶宗漢</strong><br><span class="text-gray-400 text-sm">統籌規劃（專案進度控管與簡報統整）</span></div>
+                            </li>
+                            <li class="flex items-start gap-4">
+                                <div class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center shrink-0 text-ig-purple"><i class="fa-solid fa-magnifying-glass-chart"></i></div>
+                                <div><strong class="text-lg text-white">曹紓語</strong><br><span class="text-gray-400 text-sm">職務研究（小編職能分析與產業現況）</span></div>
+                            </li>
+                            <li class="flex items-start gap-4">
+                                <div class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center shrink-0 text-ig-pink"><i class="fa-solid fa-file-pen"></i></div>
+                                <div><strong class="text-lg text-white">王怡茜</strong><br><span class="text-gray-400 text-sm">面試腳本（面試題庫設計與擬答規劃）</span></div>
+                            </li>
+                            <li class="flex items-start gap-4">
+                                <div class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center shrink-0 text-ig-orange"><i class="fa-solid fa-video"></i></div>
+                                <div><strong class="text-lg text-white">康芯菱</strong><br><span class="text-gray-400 text-sm">影片拍攝（模擬面試錄影與後製剪輯）</span></div>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <div class="bg-glass rounded-2xl p-8 bg-glass-hover transition relative overflow-hidden">
+                        <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-ig-pink to-ig-orange"></div>
+                        <h3 class="text-2xl font-bold mb-6 text-transparent bg-clip-text bg-gradient-to-r from-ig-pink to-ig-orange border-b border-white/10 pb-4">實境角色分配</h3>
+                        <div class="space-y-6">
+                            <div class="flex items-start gap-5 bg-white/5 p-5 rounded-xl border border-white/10">
+                                <div class="w-12 h-12 bg-gradient-to-br from-ig-pink to-ig-orange text-white rounded-full flex items-center justify-center text-xl shrink-0 shadow-lg"><i class="fa-solid fa-user-tie"></i></div>
+                                <div>
+                                    <h4 class="font-bold text-lg text-white">面試官 A & B</h4>
+                                    <p class="text-gray-400 mt-1">行銷主管視角。評估求職者反應、提問專業與情境題。</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-5 bg-white/5 p-5 rounded-xl border border-white/10">
+                                <div class="w-12 h-12 bg-gradient-to-br from-meta-blue to-ig-purple text-white rounded-full flex items-center justify-center text-xl shrink-0 shadow-lg"><i class="fa-solid fa-user"></i></div>
+                                <div>
+                                    <h4 class="font-bold text-lg text-white">求職者</h4>
+                                    <p class="text-gray-400 mt-1">應屆畢業生。展現個人特質、回答策略與臨場反應。</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PAGE 3: 報告大綱 -->
+        <div class="slide">
+            <div class="slide-content justify-center">
+                <h2 class="text-4xl font-black mb-12 text-center drop-shadow-lg">報告大綱</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6 max-w-5xl mx-auto w-full">
+                    
+                    <div class="flex items-center gap-6 bg-glass p-6 rounded-2xl bg-glass-hover transition">
+                        <span class="w-12 h-12 bg-gradient-to-br from-meta-blue to-ig-purple text-white rounded-full flex items-center justify-center text-xl font-black shrink-0 shadow-lg shadow-meta-blue/20">1</span>
+                        <div>
+                            <h3 class="text-xl font-bold text-white">職稱介紹</h3>
+                            <p class="text-gray-400 mt-1 text-sm">目標職務定位與產業背景</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-6 bg-glass p-6 rounded-2xl bg-glass-hover transition">
+                        <span class="w-12 h-12 bg-gradient-to-br from-meta-blue to-ig-purple text-white rounded-full flex items-center justify-center text-xl font-black shrink-0 shadow-lg shadow-meta-blue/20">2</span>
+                        <div>
+                            <h3 class="text-xl font-bold text-white">工作內容</h3>
+                            <p class="text-gray-400 mt-1 text-sm">日常核心任務與職責範圍</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-6 bg-glass p-6 rounded-2xl bg-glass-hover transition">
+                        <span class="w-12 h-12 bg-gradient-to-br from-ig-purple to-ig-pink text-white rounded-full flex items-center justify-center text-xl font-black shrink-0 shadow-lg shadow-ig-purple/20">3</span>
+                        <div>
+                            <h3 class="text-xl font-bold text-white">必備技能</h3>
+                            <p class="text-gray-400 mt-1 text-sm">硬實力（行銷工具）與軟實力特質</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-6 bg-glass p-6 rounded-2xl bg-glass-hover transition">
+                        <span class="w-12 h-12 bg-gradient-to-br from-ig-purple to-ig-pink text-white rounded-full flex items-center justify-center text-xl font-black shrink-0 shadow-lg shadow-ig-purple/20">4</span>
+                        <div>
+                            <h3 class="text-xl font-bold text-white">薪資福利</h3>
+                            <p class="text-gray-400 mt-1 text-sm">市場行情與企業福利發展</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-6 bg-glass p-6 rounded-2xl bg-glass-hover transition">
+                        <span class="w-12 h-12 bg-gradient-to-br from-ig-pink to-ig-orange text-white rounded-full flex items-center justify-center text-xl font-black shrink-0 shadow-lg shadow-ig-pink/20">5</span>
+                        <div>
+                            <h3 class="text-xl font-bold text-white">面試問題解析</h3>
+                            <p class="text-gray-400 mt-1 text-sm">核心題庫與情境題回答策略</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-6 bg-glass p-6 rounded-2xl bg-glass-hover transition">
+                        <span class="w-12 h-12 bg-gradient-to-br from-ig-pink to-ig-orange text-white rounded-full flex items-center justify-center text-xl font-black shrink-0 shadow-lg shadow-ig-pink/20">6</span>
+                        <div>
+                            <h3 class="text-xl font-bold text-white">模擬影片觀看</h3>
+                            <p class="text-gray-400 mt-1 text-sm">實戰演練還原與點評</p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- PAGE 4: 職稱介紹與工作內容 -->
+        <div class="slide">
+            <div class="slide-content items-center justify-center">
+                <div class="grid grid-cols-1 lg:grid-cols-[1.05fr_1.95fr] gap-8 w-full max-w-6xl mx-auto">
+                    <div class="bg-gradient-to-b from-[#0f4370] to-[#10355c] rounded-3xl p-9 text-white shadow-[0_16px_38px_rgba(11,49,85,0.28)] flex flex-col justify-between min-h-[560px]">
+                        <div>
+                            <div class="w-40 h-40 rounded-2xl border border-white/20 bg-white/5 flex items-center justify-center mb-8 mx-auto lg:mx-0">
+                                <div class="text-6xl text-white/95 drop-shadow-[0_0_12px_rgba(255,255,255,0.45)]">
+                                    <i class="fa-solid fa-comments"></i>
+                                </div>
+                            </div>
+                            <h2 class="text-5xl font-black leading-tight tracking-tight mb-2">社群行銷小編</h2>
+                            <p class="text-[#f0d44c] text-5xl font-black leading-none mb-8">Social Media Editor</p>
+                            <p class="text-[2rem] leading-relaxed text-white/90 font-medium">
+                                品牌與消費者溝通的第一線。透過經營平台與互動，
+                                維持粉絲黏著度，創造核心品牌價值。
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <article class="bg-glass rounded-3xl p-7 min-h-[260px] border border-white/10 flex flex-col justify-start">
+                            <i class="fa-regular fa-pen-to-square text-6xl text-[#7fd1ff] mb-4"></i>
+                            <h3 class="text-[2.2rem] font-black text-white mb-3">Q1：內容產出</h3>
+                            <p class="text-[1.85rem] leading-relaxed text-white/82">撰寫貼文文案、構思短影音腳本。</p>
+                        </article>
+
+                        <article class="bg-glass rounded-3xl p-7 min-h-[260px] border border-white/10 flex flex-col justify-start">
+                            <i class="fa-regular fa-image text-6xl text-[#7fd1ff] mb-4"></i>
+                            <h3 class="text-[2.2rem] font-black text-white mb-3">Q2：視覺製作</h3>
+                            <p class="text-[1.85rem] leading-relaxed text-white/82">使用工具製作圖文素材與短影音剪輯。</p>
+                        </article>
+
+                        <article class="bg-glass rounded-3xl p-7 min-h-[260px] border border-white/10 flex flex-col justify-start">
+                            <i class="fa-regular fa-comments text-6xl text-[#7fd1ff] mb-4"></i>
+                            <h3 class="text-[2.2rem] font-black text-white mb-3">Q3：社群互動</h3>
+                            <p class="text-[1.85rem] leading-relaxed text-white/82">回覆私訊留言，帶動話題討論。</p>
+                        </article>
+
+                        <article class="bg-glass rounded-3xl p-7 min-h-[260px] border border-white/10 flex flex-col justify-start">
+                            <i class="fa-solid fa-chart-line text-6xl text-[#7fd1ff] mb-4"></i>
+                            <h3 class="text-[2.2rem] font-black text-white mb-3">Q4：數據追蹤</h3>
+                            <p class="text-[1.85rem] leading-relaxed text-white/82">觀察後台基礎數據（觸及率、互動率）並記錄。</p>
+                        </article>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PAGE 5: 必備技能 -->
+        <div class="slide">
+            <div class="slide-content justify-center">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 h-full">
+
+                    <!-- Hard Skills -->
+                    <div class="bg-glass rounded-3xl p-8 lg:p-10 relative overflow-hidden border border-white/10 flex flex-col justify-center">
+                        <div class="absolute -top-10 -left-10 w-40 h-40 bg-meta-blue/20 blur-3xl rounded-full"></div>
+                        <div class="relative z-10">
+                            <h2 class="text-4xl lg:text-5xl font-black text-white mb-10 drop-shadow-md">硬實力 Hard Skills</h2>
+
+                            <div class="space-y-10">
+                                <div>
+                                    <h3 class="text-2xl lg:text-3xl font-black text-white mb-4">文案撰寫</h3>
+                                    <div class="w-full h-7 rounded-full bg-white shadow-inner overflow-hidden mb-4">
+                                        <div class="h-full rounded-full bg-gradient-to-r from-[#f0d44c] to-yellow-400 shadow-[0_0_14px_rgba(240,212,76,0.45)]" style="width: 76%"></div>
+                                    </div>
+                                    <p class="text-2xl text-white/88 leading-relaxed">吸引眼球的標題與說故事能力 (Storytelling)</p>
+                                </div>
+
+                                <div>
+                                    <h3 class="text-2xl lg:text-3xl font-black text-white mb-4">視覺工具</h3>
+                                    <div class="w-full h-7 rounded-full bg-white shadow-inner overflow-hidden mb-4">
+                                        <div class="h-full rounded-full bg-gradient-to-r from-[#f0d44c] to-yellow-400 shadow-[0_0_14px_rgba(240,212,76,0.45)]" style="width: 60%"></div>
+                                    </div>
+                                    <p class="text-2xl text-white/88 leading-relaxed">Canva 基礎排版、CapCut 剪輯工具操作</p>
+                                </div>
+
+                                <div>
+                                    <h3 class="text-2xl lg:text-3xl font-black text-white mb-4">平台操作</h3>
+                                    <div class="w-full h-7 rounded-full bg-white shadow-inner overflow-hidden mb-4">
+                                        <div class="h-full rounded-full bg-gradient-to-r from-[#f0d44c] to-yellow-400 shadow-[0_0_14px_rgba(240,212,76,0.45)]" style="width: 80%"></div>
+                                    </div>
+                                    <p class="text-2xl text-white/88 leading-relaxed">Meta Business Suite 等後台發布與排程</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Soft Skills -->
+                    <div class="bg-glass rounded-3xl relative overflow-hidden border border-white/10">
+                        <img src="軟實力.png" alt="軟實力" class="absolute inset-0 w-full h-full object-cover" />
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PAGE 6: 市場行情與職涯發展 -->
+        <div class="slide">
+            <div class="slide-content justify-center">
+
+                <!-- 標題列 + 起薪徽章 -->
+                <div class="flex items-start justify-between w-full mb-8">
+                    <h2 class="text-4xl font-black text-white drop-shadow-md">市場行情與職涯發展</h2>
+                    <div class="bg-yellow-400 rounded-2xl px-6 py-3 text-right shadow-lg shadow-yellow-500/20">
+                        <div class="text-base font-black text-slate-900">新鮮人起薪預估: 30K - 36K</div>
+                        <div class="text-xs text-slate-700 mt-0.5">（依作品集質量、實戰經驗與公司規模浮動）</div>
+                    </div>
+                </div>
+
+                <!-- 三階樓梯圖 -->
+                <div class="w-full mb-8 flex items-end gap-3" style="height: 200px;">
+                    <!-- Step 1 -->
+                    <div class="flex-1 flex flex-col justify-end">
+                        <div class="flex items-center justify-center text-white font-black text-lg shadow-lg shadow-meta-blue/30"
+                            style="background: linear-gradient(135deg, #0f3460, #1a4a80); height: 80px; border-radius: 12px 12px 4px 4px;">
+                            社群行銷小編
+                        </div>
+                    </div>
+                    <!-- Step 2 -->
+                    <div class="flex-1 flex flex-col justify-end">
+                        <div class="flex items-center justify-center text-white font-black text-lg shadow-lg shadow-meta-blue/30"
+                            style="background: linear-gradient(135deg, #0e3d7a, #1a5096); height: 130px; border-radius: 12px 12px 4px 4px;">
+                            社群行銷企劃
+                        </div>
+                    </div>
+                    <!-- Step 3 -->
+                    <div class="flex-1 flex flex-col justify-end">
+                        <div class="flex items-center justify-center text-white font-black text-lg shadow-lg shadow-ig-purple/30"
+                            style="background: linear-gradient(135deg, #0d3875, #1b4d99); height: 180px; border-radius: 12px 12px 4px 4px;">
+                            品牌策略總監
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 底部兩張玻璃卡片 -->
+                <div class="grid grid-cols-2 gap-5 w-full">
+                    <!-- 變動獎金 -->
+                    <div class="bg-glass rounded-2xl p-5 flex items-center gap-4 hover:-translate-y-1 transition duration-300">
+                        <div class="w-14 h-14 rounded-2xl flex items-center justify-center text-2xl flex-shrink-0 shadow-lg"
+                            style="background: linear-gradient(135deg, #f56040, #e1306c); box-shadow: 0 8px 20px rgba(225,48,108,0.3);">
+                            <i class="fa-solid fa-coins text-white"></i>
+                        </div>
+                        <div>
+                            <div class="font-black text-white text-lg mb-1">變動獎金</div>
+                            <div class="text-gray-400 text-sm">貼文流量獎金、績效達標、三節禮金</div>
+                        </div>
+                    </div>
+                    <!-- 生活福利 -->
+                    <div class="bg-glass rounded-2xl p-5 flex items-center gap-4 hover:-translate-y-1 transition duration-300">
+                        <div class="w-14 h-14 rounded-2xl flex items-center justify-center text-2xl flex-shrink-0 shadow-lg"
+                            style="background: linear-gradient(135deg, #833ab4, #e1306c); box-shadow: 0 8px 20px rgba(131,58,180,0.3);">
+                            <i class="fa-solid fa-mug-hot text-white"></i>
+                        </div>
+                        <div>
+                            <div class="font-black text-white text-lg mb-1">生活福利</div>
+                            <div class="text-gray-400 text-sm">彈性上下班、不定期下午茶、進修補助</div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- PAGE 7: 面試核心題庫（整合三題） -->
+        <div class="slide">
+            <div class="slide-content items-center justify-center">
+                <div class="grid grid-cols-1 lg:grid-cols-[1fr_2fr] gap-5 w-full max-w-6xl mx-auto h-full max-h-[calc(100vh-6rem)]">
+
+                    <!-- 左側主卡 -->
+                    <div class="bg-gradient-to-b from-[#0f4370] to-[#10355c] rounded-2xl p-6 text-white shadow-[0_12px_28px_rgba(11,49,85,0.28)] flex flex-col justify-between overflow-hidden">
+                        <div>
+                            <div class="w-12 h-12 rounded-xl border border-white/20 bg-white/5 flex items-center justify-center mb-4">
+                                <i class="fa-solid fa-circle-question text-2xl text-white/90"></i>
+                            </div>
+                            <h2 class="text-2xl font-black leading-tight tracking-tight mb-1">面試核心題庫</h2>
+                            <p class="text-[#f0d44c] text-xl font-black leading-none mb-4">Interview Q&A</p>
+                            <p class="text-sm leading-relaxed text-white/85 font-medium mb-4">
+                                整合三大高頻提問：流量策略、工具能力、危機處理。透過清晰的回答框架，展現邏輯、穩定度與執行力。
+                            </p>
+                        </div>
+                        <div class="bg-white/10 border border-white/15 rounded-xl p-4 text-sm leading-relaxed">
+                            <div class="font-black mb-2">答題關鍵原則</div>
+                            <ul class="space-y-1 text-white/90">
+                                <li>1. 先拆解問題，再提出步驟</li>
+                                <li>2. 回答要有「可執行方法」</li>
+                                <li>3. 避免空泛，強調回報與驗證</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- 右側三張卡 -->
+                    <div class="flex flex-col gap-4 h-full">
+
+                        <!-- Q1 流量與策略 -->
+                        <article class="bg-glass rounded-2xl px-7 py-5 flex-1 flex flex-col justify-center border border-white/10">
+                            <div class="flex items-center gap-3 mb-3">
+                                <i class="fa-solid fa-chart-line text-3xl text-[#7fd1ff]"></i>
+                                <h3 class="text-xl font-black text-white">Q1 流量與策略</h3>
+                            </div>
+                            <p class="text-base text-white/85 leading-relaxed mb-2">觸及率下降時，如何判斷問題來源？</p>
+                            <p class="text-sm text-white/60 leading-relaxed">回答主軸：先檢查<strong class="text-ig-pink px-1">外部因素</strong>（時事、平台改版），再檢視<strong class="text-ig-pink px-1">內部因素</strong>（發文時間、內容疲勞），最後以免費工具或競品做法驗證假設。</p>
+                        </article>
+
+                        <!-- Q2 工具與實務 -->
+                        <article class="bg-glass rounded-2xl px-7 py-5 flex-1 flex flex-col justify-center border border-white/10">
+                            <div class="flex items-center gap-3 mb-3">
+                                <i class="fa-solid fa-screwdriver-wrench text-3xl text-[#7fd1ff]"></i>
+                                <h3 class="text-xl font-black text-white">Q2 工具與實務</h3>
+                            </div>
+                            <p class="text-base text-white/85 leading-relaxed mb-2">遇到不熟工具時，如何維持產出效率？</p>
+                            <p class="text-sm text-white/60 leading-relaxed">回答主軸：誠實列出有把握的工具（Canva、CapCut、ChatGPT），強調<strong class="text-ig-pink px-1">自學力</strong>（YouTube 教學、官方文件），並展現尋找替代方案的靈活彈性。</p>
+                        </article>
+
+                        <!-- Q3 危機處理 -->
+                        <article class="bg-glass rounded-2xl px-7 py-5 flex-1 flex flex-col justify-center border border-ig-orange/30">
+                            <div class="flex items-center gap-3 mb-3">
+                                <i class="fa-solid fa-triangle-exclamation text-3xl text-[#ffb3a0]"></i>
+                                <h3 class="text-xl font-black text-[#ffb3a0]">Q3 危機處理</h3>
+                            </div>
+                            <p class="text-base text-white/85 leading-relaxed mb-4">面對負評與客訴，如何避免爭議擴大？</p>
+                            <div class="grid grid-cols-2 gap-3">
+                                <div class="bg-white/5 border border-white/10 rounded-xl p-4">
+                                    <strong class="block mb-2 text-[#ffb3a0] text-sm">第一步：安撫與轉移</strong>
+                                    <p class="text-sm text-white/80">以同理語氣回覆，並引導至私訊釐清細節，避免在公開版面擴大爭議。</p>
+                                </div>
+                                <div class="bg-white/5 border border-white/10 rounded-xl p-4">
+                                    <strong class="block mb-2 text-[#ffb3a0] text-sm">第二步：紀錄與回報</strong>
+                                    <p class="text-sm text-white/80">截圖存證，依主管或客服 SOP 統一處理，絕不擅自給予超出權限的承諾。</p>
+                                </div>
+                            </div>
+                        </article>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PAGE 9: 實境演練觀看 -->
+        <div class="slide">
+            <div class="slide-content justify-center items-center">
+                <span class="px-3 py-1 bg-white/10 text-white border border-white/20 rounded-full font-bold tracking-widest uppercase text-xs mb-4 inline-block">Showtime</span>
+                <h2 class="text-4xl font-black mb-10 text-center drop-shadow-md">實境演練觀看</h2>
+                
+                <!-- Video Mockup -->
+                <div class="w-full max-w-4xl aspect-video bg-black/50 rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.5)] relative group cursor-pointer border border-white/20 overflow-hidden mb-10 backdrop-blur-xl">
+                    <!-- 使用漸層假裝有影片內容 -->
+                    <div class="absolute inset-0 bg-gradient-to-tr from-slate-900 via-meta-blue/20 to-ig-purple/20 opacity-60 group-hover:scale-105 transition duration-700"></div>
+                    <div class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1516321318423-f06f85e504b3?q=80&w=1200&auto=format&fit=crop')] bg-cover opacity-20 mix-blend-overlay group-hover:opacity-30 transition duration-500"></div>
+                    
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent"></div>
+                    
+                    <!-- Play Button (Instagram Style Gradient) -->
+                    <div class="absolute inset-0 flex items-center justify-center">
+                        <div class="w-20 h-20 bg-gradient-to-tr from-ig-orange via-ig-pink to-ig-purple text-white rounded-full flex items-center justify-center text-3xl shadow-[0_0_30px_rgba(225,48,108,0.6)] group-hover:scale-110 transition duration-300 relative z-10">
+                            <i class="fa-solid fa-play ml-1"></i>
+                        </div>
+                    </div>
+                    
+                    <!-- Video Title Overlay -->
+                    <div class="absolute bottom-6 left-8 right-8 flex justify-between items-end">
+                        <div>
+                            <h3 class="text-2xl font-bold mb-3 text-white drop-shadow-md">社群行銷小編 - 模擬面試實況</h3>
+                            <div class="flex gap-3 text-xs font-medium">
+                                <span class="bg-white/20 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/10"><i class="fa-solid fa-stopwatch mr-1"></i> 05:24</span>
+                                <span class="bg-white/20 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/10"><i class="fa-solid fa-users mr-1"></i> 角色扮演</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl w-full">
+                    <div class="bg-glass p-5 rounded-xl border border-white/10 hover:bg-white/10 transition">
+                        <h4 class="text-ig-pink font-bold mb-3 flex items-center gap-2"><i class="fa-solid fa-masks-theater"></i> 角色設定</h4>
+                        <ul class="text-gray-300 text-sm space-y-2">
+                            <li class="flex gap-2"><span class="text-white/50">•</span> <span><strong class="text-white">面試官：</strong>嚴格但講理的行銷主管</span></li>
+                            <li class="flex gap-2"><span class="text-white/50">•</span> <span><strong class="text-white">求職者：</strong>無經驗但充滿熱忱的應屆畢業生</span></li>
+                        </ul>
+                    </div>
+                    <div class="bg-glass p-5 rounded-xl border border-white/10 hover:bg-white/10 transition">
+                        <h4 class="text-meta-blue font-bold mb-3 flex items-center gap-2"><i class="fa-solid fa-crosshairs"></i> 觀看重點</h4>
+                        <ul class="text-gray-300 text-sm space-y-2">
+                            <li class="flex gap-2"><span class="text-meta-blue"><i class="fa-solid fa-check"></i></span> 面對流量下降提問時的邏輯推演</li>
+                            <li class="flex gap-2"><span class="text-meta-blue"><i class="fa-solid fa-check"></i></span> 回答危機處理時的態度與語氣</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PAGE 10: 時程與 QA -->
+        <div class="slide">
+            <div class="slide-content justify-center items-center text-center">
+                <h2 class="text-7xl md:text-8xl font-black mb-4 text-transparent bg-clip-text bg-gradient-to-r from-meta-blue via-ig-purple to-ig-pink drop-shadow-2xl">Q & A</h2>
+                <p class="text-xl text-gray-400 bg-white/5 inline-block px-8 py-3 rounded-full border border-white/10 backdrop-blur-sm">感謝您的聆聽，歡迎提問與指教</p>
+            </div>
+        </div>
+
+        <!-- 導航控制列 (改為深色毛玻璃風格) -->
+        <div id="navControls" class="fixed bottom-6 right-8 flex gap-3 z-50">
+            <button id="prevBtn" class="w-12 h-12 bg-white/10 backdrop-blur-md text-white border border-white/20 rounded-full shadow-lg flex items-center justify-center hover:bg-white/20 hover:scale-105 transition" title="上一頁">
+                <i class="fa-solid fa-chevron-left"></i>
+            </button>
+            <div id="slideCounter" class="bg-white/10 backdrop-blur-md text-white border border-white/20 font-bold px-5 rounded-full shadow-lg flex items-center justify-center text-sm tracking-widest">
+                1 / 10
+            </div>
+            <button id="nextBtn" class="w-12 h-12 bg-white/10 backdrop-blur-md text-white border border-white/20 rounded-full shadow-lg flex items-center justify-center hover:bg-white/20 hover:scale-105 transition" title="下一頁">
+                <i class="fa-solid fa-chevron-right"></i>
+            </button>
+        </div>
+
+    </div>
+
+    <!-- 輪播邏輯 -->
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const slides = document.querySelectorAll(".slide");
+            const prevBtn = document.getElementById("prevBtn");
+            const nextBtn = document.getElementById("nextBtn");
+            const counter = document.getElementById("slideCounter");
+            const navControls = document.getElementById("navControls");
+            let currentIndex = 0;
+            const totalSlides = slides.length;
+            let navFadeTimer;
+            let transitionLock = false;
+            const motionClasses = ["enter-next", "enter-prev", "exit-next", "exit-prev"];
+            const transitionDuration = 620;
+
+            function clearMotionState(slide) {
+                slide.classList.remove(...motionClasses);
+            }
+
+            function showNavControls() {
+                navControls.classList.add("show");
+                clearTimeout(navFadeTimer);
+                navFadeTimer = setTimeout(() => {
+                    navControls.classList.remove("show");
+                }, 1600);
+            }
+
+            function goToSlide(targetIndex, direction) {
+                if (transitionLock || targetIndex === currentIndex) {
+                    return;
+                }
+
+                const currentSlide = slides[currentIndex];
+                const targetSlide = slides[targetIndex];
+
+                clearMotionState(currentSlide);
+                clearMotionState(targetSlide);
+
+                transitionLock = true;
+
+                targetSlide.classList.add("active", direction === "next" ? "enter-next" : "enter-prev");
+                currentSlide.classList.add(direction === "next" ? "exit-next" : "exit-prev");
+
+                setTimeout(() => {
+                    currentSlide.classList.remove("active", "exit-next", "exit-prev");
+                    targetSlide.classList.remove("enter-next", "enter-prev");
+                    transitionLock = false;
+                }, transitionDuration);
+
+                currentIndex = targetIndex;
+                counter.innerText = `${currentIndex + 1} / ${totalSlides}`;
+                showNavControls();
+            }
+
+            function nextSlide() {
+                if (currentIndex < totalSlides - 1) {
+                    goToSlide(currentIndex + 1, "next");
+                }
+            }
+
+            function prevSlide() {
+                if (currentIndex > 0) {
+                    goToSlide(currentIndex - 1, "prev");
+                }
+            }
+
+            // 按鈕事件
+            nextBtn.addEventListener("click", nextSlide);
+            prevBtn.addEventListener("click", prevSlide);
+
+            // 鍵盤事件支援
+            document.addEventListener("keydown", (e) => {
+                if (e.key === "ArrowRight" || e.key === " " || e.key === "PageDown") {
+                    nextSlide();
+                } else if (e.key === "ArrowLeft" || e.key === "PageUp") {
+                    prevSlide();
+                }
+            });
+            
+            // 初始化計數器
+            counter.innerText = `${currentIndex + 1} / ${totalSlides}`;
+            showNavControls();
+        });
+    </script>
+</body>
+</html>
