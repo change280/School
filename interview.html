@@ -252,6 +252,72 @@
             opacity: 1;
         }
 
+        /* ===== 實境演練影片區（自訂工具列） ===== */
+        .video-showcase {
+            position: relative;
+        }
+        .video-showcase video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            background: #000;
+        }
+        .video-static-overlay {
+            position: absolute;
+            inset: 0;
+            pointer-events: auto;
+            transition: opacity 0.28s ease;
+        }
+        .video-showcase.playing .video-static-overlay {
+            opacity: 0;
+            pointer-events: none;
+        }
+        .video-toolbar {
+            position: absolute;
+            left: 50%;
+            bottom: 1rem;
+            transform: translate(-50%, 10px);
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s ease, transform 0.2s ease;
+            z-index: 20;
+        }
+        .video-showcase.playing:hover .video-toolbar,
+        .video-showcase.playing:focus-within .video-toolbar {
+            opacity: 1;
+            transform: translate(-50%, 0);
+            pointer-events: auto;
+        }
+        .video-tool-btn {
+            width: 2.8rem;
+            height: 2.8rem;
+            border-radius: 9999px;
+            border: 1px solid rgba(255, 255, 255, 0.26);
+            background: rgba(15, 23, 42, 0.76);
+            color: #fff;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            transition: transform 0.2s ease, background-color 0.2s ease;
+        }
+        .video-tool-btn:hover {
+            background: rgba(30, 41, 59, 0.92);
+            transform: translateY(-1px);
+        }
+        .video-tool-btn:active {
+            transform: translateY(0);
+        }
+        .video-tool-btn i {
+            pointer-events: none;
+        }
+
         /* ===== 開場 Splash 動畫 ===== */
         #splash {
             position: fixed;
@@ -1013,30 +1079,45 @@
                 <span class="px-3 py-1 bg-white/10 text-white border border-white/20 rounded-full font-bold tracking-widest uppercase text-xs mb-4 inline-block">Showtime</span>
                 <h2 class="text-4xl font-black mb-10 text-center drop-shadow-md">實境演練觀看</h2>
                 
-                <!-- Video Mockup -->
-                <div class="w-full max-w-4xl aspect-video bg-black/50 rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.5)] relative group cursor-pointer border border-white/20 overflow-hidden mb-10 backdrop-blur-xl">
-                    <!-- 使用漸層假裝有影片內容 -->
-                    <div class="absolute inset-0 bg-gradient-to-tr from-slate-900 via-meta-blue/20 to-ig-purple/20 opacity-60 group-hover:scale-105 transition duration-700"></div>
-                    <div class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1516321318423-f06f85e504b3?q=80&w=1200&auto=format&fit=crop')] bg-cover opacity-20 mix-blend-overlay group-hover:opacity-30 transition duration-500"></div>
-                    
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent"></div>
-                    
-                    <!-- Play Button (Instagram Style Gradient) -->
-                    <div class="absolute inset-0 flex items-center justify-center">
-                        <div class="w-20 h-20 bg-gradient-to-tr from-ig-orange via-ig-pink to-ig-purple text-white rounded-full flex items-center justify-center text-3xl shadow-[0_0_30px_rgba(225,48,108,0.6)] group-hover:scale-110 transition duration-300 relative z-10">
-                            <i class="fa-solid fa-play ml-1"></i>
+                <!-- Video 區（保留原版型，改為實際播放） -->
+                <div id="interviewPlayer" class="video-showcase w-full max-w-4xl aspect-video bg-black/50 rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.5)] relative group border border-white/20 overflow-hidden mb-10 backdrop-blur-xl">
+                    <video id="interviewVideo" class="absolute inset-0 w-full h-full" controls preload="metadata" playsinline poster="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?q=80&w=1200&auto=format&fit=crop">
+                        <source src="面試.mp4" type="video/mp4">
+                        您的瀏覽器不支援影片播放，請改用支援 HTML5 video 的瀏覽器。
+                    </video>
+
+                    <div id="videoStaticOverlay" class="video-static-overlay">
+                        <div class="absolute inset-0 bg-gradient-to-tr from-slate-900 via-meta-blue/20 to-ig-purple/20 opacity-60 group-hover:scale-105 transition duration-700"></div>
+                        <div class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1516321318423-f06f85e504b3?q=80&w=1200&auto=format&fit=crop')] bg-cover opacity-20 mix-blend-overlay group-hover:opacity-30 transition duration-500"></div>
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent"></div>
+
+                        <div class="absolute inset-0 flex items-center justify-center">
+                            <button id="videoCenterPlayBtn" type="button" class="w-20 h-20 bg-gradient-to-tr from-ig-orange via-ig-pink to-ig-purple text-white rounded-full flex items-center justify-center text-3xl shadow-[0_0_30px_rgba(225,48,108,0.6)] group-hover:scale-110 transition duration-300 relative z-10" aria-label="播放影片">
+                                <i class="fa-solid fa-play ml-1"></i>
+                            </button>
                         </div>
-                    </div>
-                    
-                    <!-- Video Title Overlay -->
-                    <div class="absolute bottom-6 left-8 right-8 flex justify-between items-end">
-                        <div>
-                            <h3 class="text-2xl font-bold mb-3 text-white drop-shadow-md">社群行銷小編 - 模擬面試實況</h3>
-                            <div class="flex gap-3 text-xs font-medium">
-                                <span class="bg-white/20 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/10"><i class="fa-solid fa-stopwatch mr-1"></i> 05:24</span>
-                                <span class="bg-white/20 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/10"><i class="fa-solid fa-users mr-1"></i> 角色扮演</span>
+
+                        <div class="absolute bottom-6 left-8 right-8 flex justify-between items-end">
+                            <div>
+                                <h3 class="text-2xl font-bold mb-3 text-white drop-shadow-md">社群行銷小編 - 模擬面試實況</h3>
+                                <div class="flex gap-3 text-xs font-medium">
+                                    <span class="bg-white/20 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/10"><i class="fa-solid fa-stopwatch mr-1"></i> 03:29</span>
+                                    <span class="bg-white/20 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/10"><i class="fa-solid fa-users mr-1"></i> 角色扮演</span>
+                                </div>
                             </div>
                         </div>
+                    </div>
+
+                    <div id="videoToolbar" class="video-toolbar" aria-label="影片控制工具列">
+                        <button id="videoBack10Btn" type="button" class="video-tool-btn" aria-label="往前 10 秒">
+                            <i class="fa-solid fa-rotate-left"></i>
+                        </button>
+                        <button id="videoPlayPauseBtn" type="button" class="video-tool-btn" aria-label="暫停">
+                            <i id="videoPlayPauseIcon" class="fa-solid fa-pause"></i>
+                        </button>
+                        <button id="videoForward10Btn" type="button" class="video-tool-btn" aria-label="往後 10 秒">
+                            <i class="fa-solid fa-rotate-right"></i>
+                        </button>
                     </div>
                 </div>
                 
@@ -1091,12 +1172,33 @@
             const counter = document.getElementById("slideCounter");
             const navControls = document.getElementById("navControls");
             const isMobile = window.innerWidth <= 640;
-            // 手機版：直接從第二頁（index 1）開始，封面完全不出現
-            let currentIndex = isMobile ? 1 : 0;
-            if (isMobile) {
-                slides[0].classList.remove("active");
-                slides[1].classList.add("active");
+            const slideStorageKey = "mockInterviewCurrentSlide";
+            const safeGetStoredSlide = () => {
+                const stored = Number(localStorage.getItem(slideStorageKey));
+                if (!Number.isInteger(stored)) {
+                    return null;
+                }
+                return stored;
+            };
+
+            // 手機版預設從第二頁開始（封面隱藏），但優先還原上次瀏覽頁碼
+            const fallbackIndex = isMobile ? 1 : 0;
+            const storedIndex = safeGetStoredSlide();
+            let currentIndex = storedIndex !== null ? storedIndex : fallbackIndex;
+
+            if (isMobile && currentIndex < 1) {
+                currentIndex = 1;
             }
+
+            if (currentIndex < 0 || currentIndex >= slides.length) {
+                currentIndex = fallbackIndex;
+            }
+
+            slides.forEach((slide, index) => {
+                slide.classList.toggle("active", index === currentIndex);
+            });
+
+            localStorage.setItem(slideStorageKey, String(currentIndex));
             const totalSlides = slides.length;
             let navFadeTimer;
             let transitionLock = false;
@@ -1142,6 +1244,7 @@
                 }, transitionDuration);
 
                 currentIndex = targetIndex;
+                localStorage.setItem(slideStorageKey, String(currentIndex));
                 counter.innerText = `${currentIndex + 1} / ${totalSlides}`;
                 showNavControls();
             }
@@ -1180,6 +1283,51 @@
             if (splash) {
                 // 動畫播完後（3.4s + 0.75s = 4.15s）移除元素，釋放記憶體
                 setTimeout(() => { splash.style.display = 'none'; }, 4200);
+            }
+
+            // ── 實境演練影片控制（hover 顯示工具列） ──
+            const interviewPlayer = document.getElementById("interviewPlayer");
+            const interviewVideo = document.getElementById("interviewVideo");
+            const videoCenterPlayBtn = document.getElementById("videoCenterPlayBtn");
+            const videoPlayPauseBtn = document.getElementById("videoPlayPauseBtn");
+            const videoPlayPauseIcon = document.getElementById("videoPlayPauseIcon");
+            const videoBack10Btn = document.getElementById("videoBack10Btn");
+            const videoForward10Btn = document.getElementById("videoForward10Btn");
+
+            if (interviewPlayer && interviewVideo && videoCenterPlayBtn && videoPlayPauseBtn && videoPlayPauseIcon && videoBack10Btn && videoForward10Btn) {
+                function syncVideoState() {
+                    const isPaused = interviewVideo.paused || interviewVideo.ended;
+                    interviewPlayer.classList.toggle("playing", !isPaused);
+                    videoPlayPauseIcon.className = isPaused ? "fa-solid fa-play" : "fa-solid fa-pause";
+                    videoPlayPauseBtn.setAttribute("aria-label", isPaused ? "播放" : "暫停");
+                }
+
+                function togglePlayPause() {
+                    if (interviewVideo.paused || interviewVideo.ended) {
+                        interviewVideo.play();
+                    } else {
+                        interviewVideo.pause();
+                    }
+                }
+
+                videoCenterPlayBtn.addEventListener("click", togglePlayPause);
+                videoPlayPauseBtn.addEventListener("click", togglePlayPause);
+
+                videoBack10Btn.addEventListener("click", () => {
+                    interviewVideo.currentTime = Math.max(0, interviewVideo.currentTime - 10);
+                });
+
+                videoForward10Btn.addEventListener("click", () => {
+                    interviewVideo.currentTime = Math.min(interviewVideo.duration || Number.MAX_SAFE_INTEGER, interviewVideo.currentTime + 10);
+                });
+
+                interviewVideo.addEventListener("play", syncVideoState);
+                interviewVideo.addEventListener("pause", syncVideoState);
+                interviewVideo.addEventListener("ended", syncVideoState);
+
+                // 點擊影片主畫面也可切換播放狀態
+                interviewVideo.addEventListener("click", togglePlayPause);
+                syncVideoState();
             }
 
             // ── 觸控滑動支援（手機版） ──
